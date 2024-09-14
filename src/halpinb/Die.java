@@ -35,6 +35,7 @@ public class Die {
     /**
      * constructor for creating a die
      * @param numSides is an int for the number of sides the die should have
+     * @throws IllegalArgumentException when the number of sides is not between 2 and 10
      */
     public Die(int numSides) {
         currentValue = 0;
