@@ -104,9 +104,9 @@ public class Driver {
                     integerStrings.size());
         }
         //finally placing them in the int[] list
-        list = new int[]{Integer.valueOf(integerStrings.get(0)),
+        list = new int[] {Integer.valueOf(integerStrings.get(0)),
                 Integer.valueOf(integerStrings.get(1)),
-                Integer.valueOf(integerStrings.get(2)) };
+                Integer.valueOf(integerStrings.get(2))};
         //finding if too little or too many dice were inputted
         if (list[0] < MIN_DICE || list[0] > MAX_DICE) {
             throw new IllegalArgumentException("Number of dice must be between 2 and 10");
