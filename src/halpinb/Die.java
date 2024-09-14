@@ -24,13 +24,18 @@ public class Die {
      */
     private int currentValue;
     /**
-     * int for the minimum sides the die must have
-     */
-    private static final int MIN_SIDES = 2;
-    /**
      * int for the maximum sides the die must have
      */
     private static final int MAX_SIDES = 100;
+    /**
+     * int for the minimum sides the die must have
+     */
+    private static final int MIN_SIDES = 2;
+
+    /**
+     * constructor for creating a die
+     * @param numSides is an int for the number of sides the die should have
+     */
     public Die(int numSides) {
         currentValue = 0;
         //throws exception if the sides are not between 2 and 100

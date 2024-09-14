@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * The driver program will ask the user for
@@ -69,6 +67,9 @@ public class Driver {
     /**
      * method to receive input from the user for the dice game
      * @return int[] is a list of numbers to create dice with
+     * @throws InputMismatchException when the input contains letters or symbols
+     * or when the input does not have three designated numbers
+     * @throws IllegalArgumentException when the number of dice is not between 2 or 10
      */
     public static int[] getInput() {
         //setting up scanner and lists
@@ -99,7 +100,7 @@ public class Driver {
         //finally placing them in the int[] list
         list = new int[]{Integer.valueOf(integerStrings.get(0)),
                 Integer.valueOf(integerStrings.get(1)),
-                Integer.valueOf(integerStrings.get(2))};
+                Integer.valueOf(integerStrings.get(2)) };
         //finding if too little or too many dice were inputted
         if (list[0] < MIN_DICE || list[0] > MAX_DICE) {
             throw new IllegalArgumentException("Number of dice must be between 2 and 10");

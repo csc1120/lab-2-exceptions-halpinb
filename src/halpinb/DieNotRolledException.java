@@ -14,6 +14,11 @@ package halpinb;
  * rolled before looking for its value.
  */
 public class DieNotRolledException extends RuntimeException {
+    /**
+     * the constructor for the exception
+     * @param message is a string to print out when
+     *                an exception occurs.
+     */
     public DieNotRolledException(String message) {
         super("Die not rolled: " + message);
     }
