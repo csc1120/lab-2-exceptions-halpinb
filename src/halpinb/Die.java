@@ -16,14 +16,6 @@ package halpinb;
  */
 public class Die {
     /**
-     * int for the number of sides the die has
-     */
-    private int numSides;
-    /**
-     * int for the current value of the die
-     */
-    private int currentValue;
-    /**
      * int for the maximum sides the die must have
      */
     private static final int MAX_SIDES = 100;
@@ -31,6 +23,14 @@ public class Die {
      * int for the minimum sides the die must have
      */
     private static final int MIN_SIDES = 2;
+    /**
+     * int for the number of sides the die has
+     */
+    private int numSides;
+    /**
+     * int for the current value of the die
+     */
+    private int currentValue;
 
     /**
      * constructor for creating a die

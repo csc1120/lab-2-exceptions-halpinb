@@ -31,11 +31,17 @@ public class Driver {
      */
     private static final int MAX_DICE = 10;
     /**
+     * number for 10
+     */
+    private static final int TEN = 10;
+    /**
      * number for how long the list of possible numbers is
      */
     private static int range;
     /**
      * number for the lowest possible roll
+     * @throws IllegalArgumentException for numbers not allowed in input
+     * @throws InputMismatchException for incorrect input formatting
      */
     private static int minimum;
     public static void main(String[] args) {
@@ -188,8 +194,8 @@ public class Driver {
         for(int i = 0; i < range; i++) {
             System.out.printf("%4s:" + list[i] + "\t\t", i + minimum);
             //printing asterisks according to the scale and rolls of each possible number
-            if(!(max / 10 == 0)) {
-                for(int j = 0; j < list[i] / (max / 10); j++) {
+            if(!(max / TEN == 0)) {
+                for(int j = 0; j < list[i] / (max / TEN); j++) {
                     System.out.print("*");
                 }
             }
