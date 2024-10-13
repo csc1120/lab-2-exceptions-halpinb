@@ -1,0 +1,326 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"/><title>halpinb</title></head><body><xmp>
+# Lab 2 - Exceptions
+
+>> | Earned | Possible | Criteria                                         |
+>> | ------ | -------- | ------------------------------------------------ |
+>> |   15   |    15    | Intermediate Commits                             |
+>> |   60   |    60    | Technical quality (see point deductions in code) |
+>> |   15   |    15    | Coding standard compliance and program clarity   |
+>> |   10   |    10    | Following submission instructions                |
+>
+> # Feedback
+> * Nice work!
+
+
+# Die.java
+
+```
+/*
+ * Course: CSC1020 131
+ * Fall 2024
+ * Lab 2 - Exceptions
+ * Die class
+ * Name: Brady Halpin
+ * Last Updated: 9/9/2024
+ */
+package halpinb;
+
+/**
+ * The Die class creates a single die and
+ * holds the values for its sides and current
+ * value. The die can be rolled and then the
+ * value it landed on can be inspected.
+ */
+public class Die {
+    /**
+     * int for the maximum sides the die must have
+     */
+    private static final int MAX_SIDES = 100;
+    /**
+     * int for the minimum sides the die must have
+     */
+    private static final int MIN_SIDES = 2;
+    /**
+     * int for the number of sides the die has
+     */
+    private int numSides;
+    /**
+     * int for the current value of the die
+     */
+    private int currentValue;
+
+    /**
+     * constructor for creating a die
+     * @param numSides is an int for the number of sides the die should have
+     * @throws IllegalArgumentException when the number of sides is not between 2 and 10
+     */
+    public Die(int numSides) {
+        currentValue = 0;
+        //throws exception if the sides are not between 2 and 100
+        if(numSides < MIN_SIDES || numSides > MAX_SIDES) {
+            throw new IllegalArgumentException("Number of sides must be between 2 and 100");
+        }
+        this.numSides = numSides;
+    }
+
+    /**
+     * a method for getting the current value of the die
+     * @return int for the current value of the die
+     * @throws DieNotRolledException when the die has not been
+     * rolled before checking its value again
+     */
+    public int getCurrentValue() throws DieNotRolledException {
+        //throws exception when if the die was not rolled
+        if(currentValue < 1 || currentValue > numSides) {
+            throw new DieNotRolledException("The dice was not rolled");
+        }
+        int x = currentValue;
+        currentValue = 0;
+        return x;
+    }
+
+    /**
+     * a method for rolling the die by setting
+     * it to a random value between one and
+     * the number of sides it has.
+     */
+    public void roll() {
+        currentValue = (int)((Math.random() * numSides) + 1);
+    }
+}
+```
+
+# Driver.java
+
+```
+/*
+ * Course: CSC1020 131
+ * Fall 2024
+ * Lab 2 - Exceptions
+ * Main Driver class
+ * Name: Brady Halpin
+ * Last Updated: 9/9/2024
+ */
+package halpinb;
+
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ * The driver program will ask the user for
+ * three numbers to create and roll dice. If
+ * the user gives a bad input, the program
+ * will start from the beginning. The
+ * result will be printed to the console in
+ * the form of asterisks.
+ */
+public class Driver {
+    /**
+     * number for the minimum amount of dice needed
+     */
+    private static final int MIN_DICE = 2;
+    /**
+     * number for the maximum amount of dice needed
+     */
+    private static final int MAX_DICE = 10;
+    /**
+     * number for 10
+     */
+    private static final int TEN = 10;
+    /**
+     * number for how long the list of possible numbers is
+     */
+    private static int range;
+    /**
+     * number for the lowest possible roll
+     * @throws IllegalArgumentException for numbers not allowed in input
+     * @throws InputMismatchException for incorrect input formatting
+     */
+    private static int minimum;
+    public static void main(String[] args) {
+        //will go until it has gone through all steps with no exceptions
+        boolean retry = true;
+        while (retry) {
+            try {
+                System.out.println("Please enter the number of dice to roll, " +
+                        "how many sides the dice have,\n" +
+                        "and how many rolls to complete, " +
+                        "separating the values by a space.\n" +
+                        "Example: \"2 6 1000\"\n");
+                System.out.print("Enter configuration: ");
+                int[] input = getInput();
+                System.out.println();
+                Die[] dice = createDice(input[0], input[1]);
+                int[] rolls = rollDice(dice, input[1], input[2]);
+                range = (input[0] * input[1]) - input[0] + 1;
+                minimum = input[0];
+                int max = findMax(rolls);
+                report(minimum, rolls, max);
+                retry = false;
+            } catch (IllegalArgumentException | InputMismatchException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * method to receive input from the user for the dice game
+     * @return int[] is a list of numbers to create dice with
+     * @throws InputMismatchException when the input contains letters or symbols
+     * or when the input does not have three designated numbers
+     * @throws IllegalArgumentException when the number of dice is not between 2 or 10
+     */
+```
+> #### Use String parsing method
+> The input handling logic in getInput() is unnecessarily complex, especially with the use of substring operations to split the string manually. 
+> Java provides simpler methods for splitting strings using split(), which is already being used earlier.
+
+```
+    public static int[] getInput() {
+        //setting up scanner and lists
+```
+> #### Close resource
+> The Scanner object is not closed after being used, 
+> which could lead to resource leaks in some environments.
+
+> Use try-with-resource 
+
+```
+        Scanner input = new Scanner(System.in);
+        int[] list = null;
+        String in = input.nextLine();
+        List<String> integerStrings = new ArrayList<>();
+        //collecting all the numbers
+        while(in.contains(" ")) {
+            integerStrings.add(in.substring(0, in.indexOf(" ")));
+            in = in.substring(in.indexOf(" ") + 1);
+        }
+        integerStrings.add(in);
+        //finding if any contain non-numbers
+        String invalid = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()~_+{}|:\"<>?`-=[]\\;',./";
+        for(int i = 0; i < integerStrings.size(); i++) {
+            for(int j = 0; j < integerStrings.get(i).length(); j++) {
+                if (invalid.contains(integerStrings.get(i).substring(j, j + 1))) {
+                    throw new InputMismatchException("Cannot contain letters or symbols");
+                }
+            }
+        }
+        //finding if less or more than three numbers were given
+        if(!(integerStrings.size() == 3)) {
+            throw new InputMismatchException("Must have 3 whole numbers, not " +
+                    integerStrings.size());
+        }
+        //finally placing them in the int[] list
+        list = new int[] {Integer.valueOf(integerStrings.get(0)),
+                Integer.valueOf(integerStrings.get(1)),
+                Integer.valueOf(integerStrings.get(2))};
+        //finding if too little or too many dice were inputted
+        if (list[0] < MIN_DICE || list[0] > MAX_DICE) {
+            throw new IllegalArgumentException("Number of dice must be between 2 and 10");
+        }
+        return list;
+    }
+
+    /**
+     * method to create the dice used to roll
+     * @param numDice is an int for how many dice are being rolled
+     * @param numSides is an int for the number of sides each die has
+     * @return Die[] is a list of the Die objects created
+     */
+    public static Die[] createDice(int numDice, int numSides) {
+        //making list of die objects and filling it out
+        Die[] dice = new Die[numDice];
+        for(int i = 0; i < numDice; i++) {
+            dice[i] = new Die(numSides);
+        }
+        return dice;
+    }
+
+    /**
+     * method to roll all the dice created in the previous method
+     * @param dice is a Die[] list that contains die objects
+     * @param numSides is an int for the number of sides each die has
+     * @param numRolls is an int for how many times the dice will be rolled
+     * @return int[] of the values of dice rolled
+     */
+    public static int[] rollDice(Die[] dice, int numSides, int numRolls) {
+        //making a list of ints
+        int[] rolls = new int[numRolls];
+        //rolling and inspecting each die the amount of time requested
+        for(int i = 0; i < numRolls; i++) {
+            for(int j = 0; j < dice.length; j++) {
+                dice[j].roll();
+                rolls[i] = rolls[i] + dice[j].getCurrentValue();
+            }
+        }
+        return rolls;
+    }
+
+
+    /**
+     * method to find the maximum amount of a single number rolled
+     * @param rolls is an int[] list of the rolls the dice produced
+     * @return int of the highest amount of rolls a single number got
+     */
+```
+> #### Redundant Calculation of the Range in findMax() and report()
+> The range variable, which calculates the possible number of results from rolling multiple dice, is calculated separately in multiple methods. 
+> This creates redundancy and risks inconsistency if the logic needs to be modified.
+> Move the calculation of range into one place (perhaps in the main() method or after input validation) and pass it as a parameter to the relevant methods.
+
+```
+
+    public static int findMax(int[] rolls) {
+        //finding how many times each possible number was rolled
+        int[] list = new int[range];
+        for(int i = 0; i < list.length; i++) {
+            for(int j = 0; j < rolls.length; j++) {
+                if(i + minimum == rolls[j]) {
+                    list[i]++;
+                }
+            }
+        }
+        //going through the list and finding the largest value
+        int max = list[0];
+        for(int i = 1; i < list.length; i++) {
+            if(max < list[i]) {
+                max = list[i];
+            }
+        }
+        return max;
+    }
+
+    /**
+     * method to print the results to the user in a readable fashion
+     * @param numDice is an int for how many dice are being rolled
+     * @param rolls is an int[] list of the rolls the dice produced
+     * @param max is the maximum amount of rolls a single number got
+     */
+    public static void report(int numDice, int[] rolls, int max) {
+        //recreating the list from findMax
+        int[] list = new int[range];
+        for(int i = 0; i < list.length; i++) {
+            for(int j = 0; j < rolls.length; j++) {
+                if(i + minimum == rolls[j]) {
+                    list[i]++;
+                }
+            }
+        }
+        //formating the report so colons and asterisks line up
+        for(int i = 0; i < range; i++) {
+            System.out.printf("%4s:" + list[i] + "\t\t", i + minimum);
+            //printing asterisks according to the scale and rolls of each possible number
+            if(!(max / TEN == 0)) {
+                for(int j = 0; j < list[i] / (max / TEN); j++) {
+                    System.out.print("*");
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+```
+
+</xmp><script type="text/javascript" src="https://csse.msoe.us/gradedown.js"></script></body></html>
